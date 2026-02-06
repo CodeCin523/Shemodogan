@@ -1,16 +1,16 @@
-set(ONX_SOURCES
-    onx.c
+set(SHD_SOURCES
+    shd.c
 )
 
-add_library(onx ${ONX_SOURCES})
-add_library(ONX::ONX ALIAS onx)
+add_library(shd ${SHD_SOURCES})
+add_library(Shemodogan::SHD ALIAS shd)
 
-target_include_directories(onx
+target_include_directories(shd
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(onx
+target_link_libraries(shd
     PUBLIC
         Vulkan::Vulkan
 )

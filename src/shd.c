@@ -1,12 +1,12 @@
-#include <onx/onx.h>
+#include <shd/shd.h>
 
 /* #region Core # */
 /* ############## */
-onx_status_t onx_init() {
-    return ONX_STATUS_SUCCESS;
+shd_status_t shd_init() {
+    return SHD_STATUS_SUCCESS;
 }
-onx_status_t onx_exit() {
-    return ONX_STATUS_SUCCESS;
+shd_status_t shd_exit() {
+    return SHD_STATUS_SUCCESS;
 }
 /* #endregion   # */
 /* ############## */
@@ -16,7 +16,7 @@ onx_status_t onx_exit() {
 
 // Find Current Index
 /*
-static inline u32 findci(onx_hid16_t hid) {
+static inline u32 findci(shd_hid16_t hid) {
     u32 low = 0, high = itemCount, mid;
 
     while(low < high) {
@@ -32,7 +32,7 @@ static inline u32 findci(onx_hid16_t hid) {
     return u32_MAX;
 }
 // Find Insert Index
-static inline u16 findii(onx_hid16_t hid) {
+static inline u16 findii(shd_hid16_t hid) {
     u32 low = 0, high = itemCount, mid;
 
     while(low < high) {
@@ -48,24 +48,24 @@ static inline u16 findii(onx_hid16_t hid) {
 
 }*/
 
-onx_status_t onx_register_handler(onx_handler_t *hnd) {
-    return ONX_STATUS_SUCCESS;
+shd_status_t shd_register_handler(shd_handler_t *hnd) {
+    return SHD_STATUS_SUCCESS;
 }
 
-onx_status_t onx_check_dependencies(onx_handler_t *hnd) {
+shd_status_t shd_check_dependencies(shd_handler_t *hnd) {
 
 }
-onx_status_t onx_check_dependents(onx_handler_t *hnd) {
+shd_status_t shd_check_dependents(shd_handler_t *hnd) {
 
 }
 
-onx_status_t onx_handler_initialize(onx_hid16_t hid, onx_headcrt_t *creator) {
+shd_status_t shd_handler_initialize(shd_hid16_t hid, shd_headcrt_t *creator) {
     
 }
-onx_status_t onx_handler_terminate(onx_hid16_t hid) {
+shd_status_t shd_handler_terminate(shd_hid16_t hid) {
 
 }
-onx_headhnd_t *onx_handler_get(onx_hid16_t hid, onx_headgtr_t *getter) {
+shd_headhnd_t *shd_handler_get(shd_hid16_t hid, shd_headgtr_t *getter) {
 
 }
 /* #endregion     # */

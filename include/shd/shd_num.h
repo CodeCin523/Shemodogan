@@ -1,5 +1,5 @@
-#ifndef __ONX_NUM_H__
-#define __ONX_NUM_H__
+#ifndef __SHD_NUM_H__
+#define __SHD_NUM_H__
 
 #include <stdint.h>
 #include <limits.h>
@@ -53,4 +53,4 @@ _Static_assert(DBL_MANT_DIG == 53,  "f64 must be IEEE-754 binary64");
 /* #endregion            # */
 /* ####################### */
 
-#endif /* __ONX_NUM_H__ */
+#endif /* __SHD_NUM_H__ */
