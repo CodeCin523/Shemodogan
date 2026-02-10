@@ -1,0 +1,19 @@
+[package]
+name = "shemodogan"
+version = "0.0.1"
+authors = ["CodeCin523"]
+edition = "2021"
+build = "src/build.rs"
+
+[lib]
+path="src/rs/lib.rs"
+
+[dependencies]
+libc = "0.2"
+
+# If you expose raw Vulkan handles
+ash = { version = "0.38", default-features = false }
+
+[build-dependencies]
+cmake = "0.1"
+bindgen = "0.69"
