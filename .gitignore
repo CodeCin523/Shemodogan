@@ -4,6 +4,9 @@
 _build/
 build/
 
+lib/
+bin/
+
 target/
 
 Cargo.lock

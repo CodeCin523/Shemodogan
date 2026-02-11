@@ -1,31 +1,24 @@
+use std::env;
+use std::path::PathBuf;
+use cmake::Config;
+
 fn main() {
     // Re-run build.rs if any of these change
     println!("cargo:rerun-if-changed=CMakeLists.txt");
     println!("cargo:rerun-if-changed=src/CMakeLists.txt");
+    println!("cargo:rerun-if-changed=src/c/");
+    println!("cargo:rerun-if-changed=include/");
+
+    // Get crate root (always correct even in cargo package verification)
+    let crate_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
 
     // Build the native C library via CMake
-    let dst = cmake::Config::new(".")
+    let dst = Config::new(&crate_dir)
         .build();
 
-    // Tell Cargo where to find the static library
-    println!(
-        "cargo:rustc-link-search=native={}/lib",
-        dst.display()
-    );
+    // Tell Rust/Cargo where to find the static library
+    println!("cargo:rustc-link-search=native={}/lib", dst.display());
 
-    // Link the static library
-    println!("cargo:rustc-link-lib=static=shd");
-
-    // ---- Generate Rust bindings via bindgen ----
-    // let bindings = bindgen::Builder::default()
-    //     .header("include/shd.h") // main header with handler APIs
-    //     .clang_arg("-Iinclude")
-    //     .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-    //     .generate()
-    //     .expect("Unable to generate bindings");
-    // 
-    // let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    // bindings
-    //     .write_to_file(out_path.join("bindings.rs"))
-    //     .expect("Couldn't write bindings!");
+    // Link the static library (without "lib" prefix or ".a" suffix)
+    println!("cargo:rustc-link-lib=static=Shemodogan");
 }
