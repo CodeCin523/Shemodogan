@@ -45,3 +45,9 @@ To include **Shemodogan** in another CMake project:
    Replace `your_project` with the actual name of your target.
 
 And that’s it! You're ready to start your projects with **Shemodogan**, making your life a bit easier.
+
+## License
+
+This project is licensed under the **MIT License**.
+
+The full license text can be found in [LICENSE.md](LICENSE.md) file.

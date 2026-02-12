@@ -1,15 +1,21 @@
 [package]
 name = "shemodogan"
 version = "0.0.1"
-authors = ["CodeCin523 <155215757+CodeCin523@users.noreply.github.com>"]
 edition = "2021"
-build = "src/build.rs"
-license = "MIT"
-description = "Shemodogan is a handy framework for quickly setting up Vulkan-based projects. It helps manage Vulkan objects, multithreading, and logging, so you can focus on engine logic."
+
+authors = ["CodeCin523 <155215757+CodeCin523@users.noreply.github.com>"]
+description = "Shemodogan is a handy framework for quickly setting up Vulkan-based projects. It helps streamline the boring parts like initialization and management, so you can jump straight into development."
+
 repository = "https://github.com/CodeCin523/Shemodogan"
 readme = "README.md"
+
+license = "MIT"
+license-file = "LICENSE.md"
+
 keywords = ["vulkan", "graphics", "ffi", "engine"]
 categories = ["graphics"]
+
+build = "src/build.rs"
 
 [lib]
 path = "src/rs/lib.rs"
