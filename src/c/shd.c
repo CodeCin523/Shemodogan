@@ -108,7 +108,7 @@ shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd) {
         return SHD_STATUS_FAILED_EXTERN_ALLOC;
 
     shd_basehnd_t *dt = (shd_basehnd_t *) shd_dfstack_push(&g_hndstatic_stack, hnd->datalen + 8);
-    if(dt == 0)
+    if(!dt)
         return SHD_STATUS_FAILED_INTERN_ALLOC;
 
     u32 pos = findii(hid);

@@ -10,9 +10,9 @@ static constexpr shd_hid16_t shd_handler_logger_id = SHD_HID16_LOGGER;
 /* Runtime data struct */
 typedef struct shd_hnd_logger {
     shd_basehnd_t base;
-    const char *pBuffer;
-    u32 bufferCount;
-    u32 bufferSize;
+    char *pBuf;
+    u32 bufIndex;
+    u32 bufSize;
 } shd_hnd_logger_t;
 
 /* Creator struct */
