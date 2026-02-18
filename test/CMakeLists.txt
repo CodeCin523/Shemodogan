@@ -9,3 +9,9 @@ target_link_libraries(
     test_shd PRIVATE
     Shemodogan::Shemodogan
 )
+
+add_executable(test_logger handler/test_logger.c)
+target_link_libraries(
+    test_logger PRIVATE
+    Shemodogan::Shemodogan
+)

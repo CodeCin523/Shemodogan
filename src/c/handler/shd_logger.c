@@ -21,15 +21,64 @@ static const char LOG_LEVEL[][3] = { // use array to remove null terminator that
 
 /* #region Logger # */
 /* ################ */
-void shd_flush() {
+void shd_log_flush() {
     if(!logger_dt || !logger_dt->pBuf)
         return;
 
     write(STDOUT_FILENO, logger_dt->pBuf, logger_dt->bufIndex);
     logger_dt->bufIndex = 0;
 }
+
+inline static size_t allowed_len(size_t len_msg, size_t len_required, size_t bufSize) {
+    size_t allowed = bufSize - len_required;
+    return len_msg > allowed? allowed : len_msg;
+}
+
+inline static u32 format_date(char *buf, u32 index, struct tm *local) {
+    u16 tYear = local->tm_year + 1900,
+        tDay  = local->tm_yday + 1;
+    u8  tSec  = local->tm_sec,
+        tMin  = local->tm_min,
+        tHour = local->tm_hour;
+        
+    buf[index++] = '[';
+    buf[index++] = (tYear / 1000) % 10 + '0';
+    buf[index++] = (tYear / 100) % 10 + '0';
+    buf[index++] = (tYear / 10) % 10 + '0';
+    buf[index++] = (tYear) % 10 + '0';
+    buf[index++] = '-';
+    buf[index++] = (tDay / 100) % 10 + '0';
+    buf[index++] = (tDay / 10) % 10 + '0';
+    buf[index++] = (tDay) % 10 + '0';
+    buf[index++] = ' ';
+    buf[index++] = (tHour / 10) % 10 + '0';
+    buf[index++] = (tHour) % 10 + '0';
+    buf[index++] = ':';
+    buf[index++] = (tMin / 10) % 10 + '0';
+    buf[index++] = (tMin) % 10 + '0';
+    buf[index++] = ':';
+    buf[index++] = (tSec / 10) % 10 + '0';
+    buf[index++] = (tSec) % 10 + '0';
+    buf[index++] = ']';
+
+    return index;
+}
+inline static u32 format_level(char *buf, u32 index, u8 level) {
+    const char *level_str = LOG_LEVEL[level % 4];
+
+    buf[index++] = '[';
+    buf[index++] = level_str[0];
+    buf[index++] = level_str[1];
+    buf[index++] = level_str[2];
+    buf[index++] = ']';
+
+    return index;
+}
+
 void shd_log(const char *msg, u8 level) {
     if(!logger_dt)
+        return;
+    if(!msg)
         return;
 
     size_t len_msg = strlen(msg);
@@ -44,52 +93,25 @@ void shd_log(const char *msg, u8 level) {
     char *buf = logger_dt->pBuf;
     u32 index = logger_dt->bufIndex;
 
+    len_msg = allowed_len(len_msg, len_required, logger_dt->bufSize - index);
+
     { // time
         time_t now;
         time(&now);
         struct tm *local = localtime(&now);
 
-        u16 tYear = local->tm_year + 1900,
-            tDay  = local->tm_yday + 1;
-        u8  tSec  = local->tm_sec,
-            tMin  = local->tm_min,
-            tHour = local->tm_hour;
-        
-        buf[index++] = '[';
-        buf[index++] = (tYear / 1000) % 10 + '0';
-        buf[index++] = (tYear / 100) % 10 + '0';
-        buf[index++] = (tYear / 10) % 10 + '0';
-        buf[index++] = (tYear) % 10 + '0';
-        buf[index++] = '-';
-        buf[index++] = (tDay / 100) % 10 + '0';
-        buf[index++] = (tDay / 10) % 10 + '0';
-        buf[index++] = (tDay) % 10 + '0';
-        buf[index++] = ' ';
-        buf[index++] = (tHour / 10) % 10 + '0';
-        buf[index++] = (tHour) % 10 + '0';
-        buf[index++] = ':';
-        buf[index++] = (tMin / 10) % 10 + '0';
-        buf[index++] = (tMin) % 10 + '0';
-        buf[index++] = ':';
-        buf[index++] = (tSec / 10) % 10 + '0';
-        buf[index++] = (tSec) % 10 + '0';
-        buf[index++] = ']';
+        index = format_date(buf, index, local);
     }
-    { // level
-        const char *level_str = LOG_LEVEL[level % 4];
-        buf[index++] = ' ';
-        buf[index++] = '[';
-        buf[index++] = level_str[0];
-        buf[index++] = level_str[1];
-        buf[index++] = level_str[2];
-        buf[index++] = ']';
-    }
+    // level
+    buf[index++] = ' ';
+    index = format_level(buf, index, level);
 
     // message
     buf[index++] = ' ';
     buf[index++] = '-';
     buf[index++] = ' ';
-
+    memcpy(&buf[index], msg, len_msg);
+    index += len_msg;
     buf[index++] = '\n';
 
     logger_dt->bufIndex = index;

@@ -1,8 +1,10 @@
 # ---- Shemodogan C library ----
 
-set(Shemodogan_SOURCES
-    c/shd.c
-)
+# tf, why is this here?
+# set(Shemodogan_SOURCES
+#     c/shd.c
+#     c/handler/shd_logger.c
+# )
 
 # Static library (safe for Rust FFI)
 add_library(Shemodogan STATIC)
@@ -17,6 +19,7 @@ set_target_properties(
 target_sources(
     Shemodogan PRIVATE
         c/shd.c
+        c/handler/shd_logger.c
 )
 
 target_compile_features(
