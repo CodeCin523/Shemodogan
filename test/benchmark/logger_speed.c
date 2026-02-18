@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h> // for write()
 
 #define ITERATIONS 1000000
 #define MESSAGE "Benchmark logging message."
@@ -28,6 +29,52 @@ static void write_timestamp(char *buf, size_t size) {
              tm_now.tm_sec);
 }
 
+// --- New test: direct write with write() ---
+static double benchmark_direct_preformatted(const char *preformatted) {
+    struct timespec start, end;
+    size_t len = strlen(preformatted);
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    for (size_t i = 0; i < ITERATIONS; i++) {
+        write(STDOUT_FILENO, preformatted, len);
+    }
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    return elapsed_ns(start, end) / ITERATIONS;
+}
+
+// --- New test: buffered write using write() ---
+static double benchmark_buffered_write(const char *preformatted, size_t buf_size) {
+    struct timespec start, end;
+    size_t msg_len = strlen(preformatted);
+    char *buffer = malloc(buf_size);
+    if (!buffer) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    size_t buf_pos = 0;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    for (size_t i = 0; i < ITERATIONS; i++) {
+        if (buf_pos + msg_len > buf_size) {
+            write(STDOUT_FILENO, buffer, buf_pos);
+            buf_pos = 0;
+        }
+        memcpy(buffer + buf_pos, preformatted, msg_len);
+        buf_pos += msg_len;
+    }
+
+    if (buf_pos > 0) {
+        write(STDOUT_FILENO, buffer, buf_pos);
+    }
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    free(buffer);
+
+    return elapsed_ns(start, end) / ITERATIONS;
+}
+
 int main(void) {
     printf("Initializing SHD logger...\n");
 
@@ -46,6 +93,7 @@ int main(void) {
     double time_shd_log = 0.0, time_shd_logh = 0.0;
     double time_fprintf = 0.0, time_snprintf = 0.0;
     double time_localtime_only = 0.0;
+    double time_preformatted = 0.0, time_buffered = 0.0;
 
     // --- Benchmark localtime() only ---
     {
@@ -99,27 +147,29 @@ int main(void) {
         time_fprintf = elapsed_ns(start, end) / ITERATIONS;
     }
 
-    // --- Benchmark snprintf ---
-    /* {
-        char buffer[256];
-        char timestamp[32];
-        struct timespec start, end;
-        clock_gettime(CLOCK_MONOTONIC, &start);
-        for (int i = 0; i < ITERATIONS; i++) {
-            write_timestamp(timestamp, sizeof(timestamp));
-            snprintf(buffer, sizeof(buffer), "%s [MSG] - %s\n", timestamp, MESSAGE);
-        }
-        clock_gettime(CLOCK_MONOTONIC, &end);
-        time_snprintf = elapsed_ns(start, end) / ITERATIONS;
-    } */
+    // --- Preformatted message for new tests ---
+    char preformatted[128];
+    write_timestamp(preformatted, sizeof(preformatted));
+    strcat(preformatted, " [MSG] - ");
+    strcat(preformatted, MESSAGE);
+    strcat(preformatted, "\n");
+
+    // --- Benchmark direct write using write() ---
+    time_preformatted = benchmark_direct_preformatted(preformatted);
+
+    // --- Benchmark buffered write using write() ---
+    size_t buffer_size = 8192; // example buffer
+    time_buffered = benchmark_buffered_write(preformatted, buffer_size);
 
     // --- Print summary ---
     printf("\n=== Benchmark Results (ns/log) ===\n");
-    printf("localtime() only: %.2f\n", time_localtime_only);
-    printf("shd_log:         %.2f\n", time_shd_log);
-    printf("shd_logh:        %.2f\n", time_shd_logh);
-    printf("fprintf:         %.2f\n", time_fprintf);
-    printf("snprintf:        %.2f\n", time_snprintf);
+    printf("localtime() only:       %.2f\n", time_localtime_only);
+    printf("shd_log:                %.2f\n", time_shd_log);
+    printf("shd_logh:               %.2f\n", time_shd_logh);
+    printf("fprintf:                %.2f\n", time_fprintf);
+    printf("snprintf:               %.2f\n", time_snprintf);
+    printf("direct write:           %.2f\n", time_preformatted);
+    printf("buffered write:         %.2f\n", time_buffered);
 
     shd_handler_terminate(SHD_HID16_LOGGER);
     shd_exit();
