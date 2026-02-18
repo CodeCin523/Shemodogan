@@ -30,7 +30,7 @@ void shd_log_flush() {
 }
 
 inline static size_t allowed_len(size_t len_msg, size_t len_required, size_t bufSize) {
-    size_t allowed = bufSize - len_required;
+    size_t allowed = bufSize - (len_required - len_msg);
     return len_msg > allowed? allowed : len_msg;
 }
 
@@ -75,6 +75,7 @@ inline static u32 format_level(char *buf, u32 index, u8 level) {
     return index;
 }
 
+// [YYYY-DDD HH:MM:SS] [LogLevel] - Message
 void shd_log(const char *msg, u8 level) {
     if(!logger_dt)
         return;
@@ -116,9 +117,56 @@ void shd_log(const char *msg, u8 level) {
 
     logger_dt->bufIndex = index;
 }
+
+// [YYYY-DDD HH:MM:SS] [LogLevel] [HandlerName] - Message
 void shd_logh(const char *hnd_name, const char *msg, u8 level) {
     if(!logger_dt)
         return;
+    if(!hnd_name || !msg)
+        return;
+
+    size_t len_msg = strlen(msg);
+    size_t len_hnd = strlen(hnd_name);
+    size_t len_required =  
+        19          /* timestamp */ +
+        6           /* level     */ +
+        len_hnd + 3 /* hnd_name  */ +
+        len_msg + 3 /* message   */ +
+        1           /* \n        */;
+    if(logger_dt->bufIndex + len_required > logger_dt->bufSize)
+        shd_log_flush();
+    
+    char *buf = logger_dt->pBuf;
+    u32 index = logger_dt->bufIndex;
+
+    len_msg = allowed_len(len_msg, len_required, logger_dt->bufSize - index);
+
+    { // time
+        time_t now;
+        time(&now);
+        struct tm *local = localtime(&now);
+
+        index = format_date(buf, index, local);
+    }
+    // level
+    buf[index++] = ' ';
+    index = format_level(buf, index, level);
+
+    buf[index++] = ' ';
+    buf[index++] = '[';
+    memcpy(&buf[index], hnd_name, len_hnd);
+    index += len_hnd;
+    buf[index++] = ']';
+
+    // message
+    buf[index++] = ' ';
+    buf[index++] = '-';
+    buf[index++] = ' ';
+    memcpy(&buf[index], msg, len_msg);
+    index += len_msg;
+    buf[index++] = '\n';
+
+    logger_dt->bufIndex = index;
 }
 /* #endregion     #*/
 /* ################ */
