@@ -29,7 +29,7 @@
 #ifndef __SHD_H__
 #define __SHD_H__
 
-#include "shd_type.h"
+#include "type.h"
 
 // Library lifecycle
 shd_status_t shd_init();

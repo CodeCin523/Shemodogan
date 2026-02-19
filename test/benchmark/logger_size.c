@@ -1,6 +1,5 @@
-#include "shd/shd_type.h"
 #include <shd/shd.h>
-#include <shd/handler/shd_logger.h>
+#include <shd/handler/logger.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,8 +1,7 @@
 #define _POSIX_C_SOURCE 199309L
 
-#include "shd/shd_type.h"
 #include <shd/shd.h>
-#include <shd/handler/shd_logger.h>
+#include <shd/handler/logger.h>
 
 #include <stdio.h>
 #include <stdlib.h>

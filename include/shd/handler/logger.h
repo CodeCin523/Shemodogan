@@ -1,7 +1,7 @@
 #ifndef __SHD_LOGGER_H__
 #define __SHD_LOGGER_H__
 
-#include "../shd_type.h"
+#include "../type.h"
 
 /* Registration metadata */
 extern shd_handler_meta_t shd_handler_logger_meta;

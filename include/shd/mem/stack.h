@@ -1,7 +1,7 @@
 #ifndef __SHD_STACK_H__
 #define __SHD_STACK_H__
 
-#include "../shd_num.h"
+#include "../num.h"
 
 #define SHD_ALIGN_UP(x, a) (((x) + ((a) - 1)) & ~((a) - 1))
 

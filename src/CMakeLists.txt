@@ -19,12 +19,12 @@ set_target_properties(
 target_sources(
     Shemodogan PRIVATE
         c/shd.c
-        c/handler/shd_logger.c
+        c/handler/logger.c
 )
 
-target_compile_features(
-    Shemodogan PUBLIC
-        c_std_23
+set_target_properties(Shemodogan PROPERTIES
+    C_STANDARD 23
+    C_STANDARD_REQUIRED ON
 )
 
 target_include_directories(

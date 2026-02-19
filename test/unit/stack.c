@@ -1,4 +1,4 @@
-#include <shd/mem/shd_stack.h>
+#include <shd/mem/stack.h>
 
 #include <stdlib.h>
 #include <stdio.h>

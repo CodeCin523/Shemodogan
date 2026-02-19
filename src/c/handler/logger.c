@@ -1,4 +1,4 @@
-#include <shd/handler/shd_logger.h>
+#include <shd/handler/logger.h>
 #include <shd/shd.h>
 
 #include <stdlib.h>
