@@ -27,7 +27,7 @@ void test_logger_initialization() {
     shd_status_t status = shd_init();
     assert_success(status, "Failed to initialize SHD library.");
 
-    status = shd_register_handler(SHD_HID16_LOGGER, &shd_handler_logger_meta);
+    status = shd_register_handler(SHD_HID16_LOGGER, &SHD_HND_LOGGER_META);
     assert_success(status, "Failed to register logger handler.");
 
     shd_crt_logger_t logger_creator = { {SHD_CRTTYPE_LOGGER, 0}, 8192 };

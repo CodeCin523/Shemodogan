@@ -4,8 +4,8 @@
 #include "../type.h"
 
 /* Registration metadata */
-extern shd_handler_meta_t shd_handler_logger_meta;
-static constexpr shd_hid16_t shd_handler_logger_id = SHD_HID16_LOGGER;
+extern shd_handler_meta_t SHD_HND_LOGGER_META;
+static constexpr shd_hid16_t SHD_HND_LOGGER_ID = SHD_HID16_LOGGER;
 
 /* Runtime data struct */
 typedef struct shd_hnd_logger {

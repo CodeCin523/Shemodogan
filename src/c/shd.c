@@ -10,7 +10,7 @@ struct hnd_data {
     shd_handler_meta_t *hnd;
     shd_basehnd_t *dt;
     shd_status_t status;
-    shd_hid16_t hid;
+    shd_hid16_t hnd_id;
     u16 childCount;
 };
 
@@ -68,14 +68,14 @@ shd_status_t shd_exit() {
 /* ################ */
 
 // Find Current Index
-static inline u32 findci(shd_hid16_t hid) {
+static inline u32 findci(shd_hid16_t hnd_id) {
     u32 low = 0, high = g_hnddtCount, mid;
 
     while(low < high) {
         mid = low + (high - low) / 2;
-        if(g_hnddts[mid].hid == hid)
+        if(g_hnddts[mid].hnd_id == hnd_id)
             return mid;
-        if(g_hnddts[mid].hid < hid)
+        if(g_hnddts[mid].hnd_id < hnd_id)
             low = mid + 1;
         else
             high = mid;
@@ -84,14 +84,14 @@ static inline u32 findci(shd_hid16_t hid) {
     return u32_MAX;
 }
 // Find Insert Index
-static inline u16 findii(shd_hid16_t hid) {
+static inline u16 findii(shd_hid16_t hnd_id) {
     u32 low = 0, high = g_hnddtCount, mid;
 
     while(low < high) {
         mid = low + (high - low) / 2;
-        // if(items[mid].id == hid)
+        // if(items[mid].id == hnd_id)
         //     return mid;
-        if(g_hnddts[mid].hid < hid)
+        if(g_hnddts[mid].hnd_id < hnd_id)
             low = mid + 1;
         else
             high = mid;
@@ -100,8 +100,8 @@ static inline u16 findii(shd_hid16_t hid) {
     return low;
 }
 
-shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd) {
-    if(findci(hid) != u32_MAX)
+shd_status_t shd_register_handler(shd_hid16_t hnd_id, shd_handler_meta_t *hnd) {
+    if(findci(hnd_id) != u32_MAX)
         return SHD_STATUS_HANDLER_ID_EXISTS;
 
     if(g_hnddtCount+1 >= g_hnddtSize)
@@ -111,7 +111,7 @@ shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd) {
     if(!dt)
         return SHD_STATUS_FAILED_INTERN_ALLOC;
 
-    u32 pos = findii(hid);
+    u32 pos = findii(hnd_id);
     if(pos != g_hnddtCount) {
         memmove(&g_hnddts[pos + 1],
                 &g_hnddts[pos],
@@ -120,7 +120,7 @@ shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd) {
     g_hnddts[pos].hnd = hnd;
     g_hnddts[pos].dt = dt;
     g_hnddts[pos].status = SHD_STATUS_SUCCESS;
-    g_hnddts[pos].hid = hid;
+    g_hnddts[pos].hnd_id = hnd_id;
     g_hnddts[pos].childCount = 0;
 
     ++g_hnddtCount;
@@ -128,8 +128,8 @@ shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd) {
     return SHD_STATUS_SUCCESS;
 }
 
-shd_status_t shd_check_dependencies(shd_hid16_t hid, shd_handler_meta_t *hnd) {
-    u32 pos = findci(hid);
+shd_status_t shd_check_dependencies(shd_hid16_t hnd_id, shd_handler_meta_t *hnd) {
+    u32 pos = findci(hnd_id);
     if (pos == u32_MAX)
         return SHD_STATUS_HANDLER_ID_NOT_FOUND;
 
@@ -139,26 +139,27 @@ shd_status_t shd_check_dependencies(shd_hid16_t hid, shd_handler_meta_t *hnd) {
     }
     return SHD_STATUS_SUCCESS;
 }
-shd_status_t shd_check_dependents(shd_hid16_t hid, shd_handler_meta_t *hnd) {
-    u32 pos = findci(hid);
+shd_status_t shd_check_dependents(shd_hid16_t hnd_id, shd_handler_meta_t *hnd) {
+    u32 pos = findci(hnd_id);
     if(pos == u32_MAX)
         return SHD_STATUS_HANDLER_ID_NOT_FOUND;
     
     return g_hnddts[pos].childCount == 0? SHD_STATUS_SUCCESS : SHD_STATUS_FAILED;
 }
 
-shd_status_t shd_handler_initialize(shd_hid16_t hid, shd_basecrt_t *creator) {
-    int pos = findci(hid);
+shd_status_t shd_handler_initialize(shd_hid16_t hnd_id, shd_basecrt_t *creator) {
+    int pos = findci(hnd_id);
     if(pos == u32_MAX)
         return SHD_STATUS_HANDLER_ID_NOT_FOUND;
 
     if(g_hnddts[pos].status == SHD_STATUS_HANDLER_INITIALIZED)
         return SHD_STATUS_HANDLER_INVALID_STATE;
 
-    if(shd_check_dependencies(hid, g_hnddts[pos].hnd) != SHD_STATUS_SUCCESS)
+    if(shd_check_dependencies(hnd_id, g_hnddts[pos].hnd) != SHD_STATUS_SUCCESS)
         return SHD_STATUS_HANDLER_MISSING_DEPENDENCIES;
 
     shd_status_t status = g_hnddts[pos].hnd->fInitialize(creator);
+    shd_dfstack_clear(&g_hndtemp_stack);
 
     if(status == SHD_STATUS_SUCCESS) {
         for(u16 i = 0; i < g_hnddts[pos].hnd->depCount; ++i) {
@@ -174,18 +175,19 @@ shd_status_t shd_handler_initialize(shd_hid16_t hid, shd_basecrt_t *creator) {
         g_hnddts[pos].status = SHD_STATUS_FAILED;
     return status;
 }
-shd_status_t shd_handler_terminate(shd_hid16_t hid) {
-    int pos = findci(hid);
+shd_status_t shd_handler_terminate(shd_hid16_t hnd_id) {
+    int pos = findci(hnd_id);
     if(pos == u32_MAX)
         return SHD_STATUS_HANDLER_ID_NOT_FOUND;
 
     if(g_hnddts[pos].status == SHD_STATUS_HANDLER_TERMINATED)
         return SHD_STATUS_HANDLER_INVALID_STATE;
 
-    if(shd_check_dependents(hid, g_hnddts[pos].hnd) != SHD_STATUS_SUCCESS)
+    if(shd_check_dependents(hnd_id, g_hnddts[pos].hnd) != SHD_STATUS_SUCCESS)
         return SHD_STATUS_HANDLER_EXISTENT_DEPENDENTS;
 
     shd_status_t status = g_hnddts[pos].hnd->fTerminate();
+    shd_dfstack_clear(&g_hndtemp_stack);
 
     if(status == SHD_STATUS_SUCCESS) {
         for(u16 i = 0; i < g_hnddts[pos].hnd->depCount; ++i) {
@@ -201,8 +203,8 @@ shd_status_t shd_handler_terminate(shd_hid16_t hid) {
         g_hnddts[pos].status = SHD_STATUS_HANDLER_INITIALIZED;
     return status;
 }
-shd_basehnd_t *shd_handler_get(shd_hid16_t hid, shd_basegtr_t *getter) {
-    int pos = findci(hid);
+shd_basehnd_t *shd_handler_get(shd_hid16_t hnd_id, shd_basegtr_t *getter) {
+    int pos = findci(hnd_id);
     if(pos == u32_MAX)
         return 0;
 

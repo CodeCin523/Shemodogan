@@ -168,7 +168,7 @@ void shd_logh(const char *hnd_name, const char *msg, u8 level) {
 
     logger_dt->bufIndex = index;
 }
-/* #endregion     #*/
+/* #endregion     # */
 /* ################ */
 
 /* #region Handler# */
@@ -188,7 +188,7 @@ static shd_status_t logger_init(shd_basecrt_t *_creator) {
     }
 
     shd_hnd_logger_t *dt = (shd_hnd_logger_t *) shd_handler_get(
-        shd_handler_logger_id, 
+        SHD_HND_LOGGER_ID, 
         &(shd_basegtr_t){ 0, SHD_GTRFLAG_DIRECT_INSTANCE }
     );
     if(!dt)
@@ -226,7 +226,7 @@ static shd_basehnd_t *logger_get(shd_basegtr_t *_getter) {
     return 0;
 }
 
-shd_handler_meta_t shd_handler_logger_meta = {
+shd_handler_meta_t SHD_HND_LOGGER_META = {
     logger_init,
     logger_term,
     logger_get,

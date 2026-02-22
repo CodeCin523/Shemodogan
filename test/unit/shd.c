@@ -13,10 +13,10 @@ shd_status_t Term() {
 }
 
 struct foo_data {
-    shd_basehnd_t handler_header;
+    shd_basehnd_t base;
 };
 struct bar_data {
-    shd_basehnd_t handler_header;
+    shd_basehnd_t base;
 };
 
 u16 deps[] = {100, 101};
@@ -64,10 +64,10 @@ int main(void) {
     status = shd_register_handler(101, &handler_bar);
     printf("%d - ", status);
     if(status != SHD_STATUS_SUCCESS) {
-        printf("Failed register foo.\n");
+        printf("Failed register bar.\n");
         return 1;
     }
-    printf("Success register foo.\n");
+    printf("Success register bar.\n");
 
     // Initialize handler
     status = shd_handler_initialize(100, &creator_header);

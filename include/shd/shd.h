@@ -36,15 +36,15 @@ shd_status_t shd_init();
 shd_status_t shd_exit();
 
 // Handler registration
-shd_status_t shd_register_handler(shd_hid16_t hid, shd_handler_meta_t *hnd);
+shd_status_t shd_register_handler(shd_hid16_t hnd_id, shd_handler_meta_t *hnd);
 
 // Dependency checks (optional, for introspection)
-shd_status_t shd_check_dependencies(shd_hid16_t hid, shd_handler_meta_t *hnd);
-shd_status_t shd_check_dependents(shd_hid16_t hid, shd_handler_meta_t *hnd);
+shd_status_t shd_check_dependencies(shd_hid16_t hnd_id, shd_handler_meta_t *hnd);
+shd_status_t shd_check_dependents(shd_hid16_t hnd_id, shd_handler_meta_t *hnd);
 
 // Handler runtime interface
-shd_status_t shd_handler_initialize(shd_hid16_t hid, shd_basecrt_t *creator);
-shd_status_t shd_handler_terminate(shd_hid16_t hid);
-shd_basehnd_t *shd_handler_get(shd_hid16_t hid, shd_basegtr_t *getter);
+shd_status_t shd_handler_initialize(shd_hid16_t hnd_id, shd_basecrt_t *creator);
+shd_status_t shd_handler_terminate(shd_hid16_t hnd_id);
+shd_basehnd_t *shd_handler_get(shd_hid16_t hnd_id, shd_basegtr_t *getter);
 
 #endif /* __SHD_H__ */

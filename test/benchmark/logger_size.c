@@ -83,7 +83,7 @@ int main(void) {
     status = shd_init();
     if (status != SHD_STATUS_SUCCESS) exit(EXIT_FAILURE);
 
-    status = shd_register_handler(SHD_HID16_LOGGER, &shd_handler_logger_meta);
+    status = shd_register_handler(SHD_HID16_LOGGER, &SHD_HND_LOGGER_META);
     if (status != SHD_STATUS_SUCCESS) exit(EXIT_FAILURE);
 
     // Buffer sizes to test

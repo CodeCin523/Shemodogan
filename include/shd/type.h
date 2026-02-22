@@ -74,16 +74,25 @@ typedef u32 shd_gtrtype_t;
 typedef u32 shd_gtrflags_t;
 #define SHD_GTRFLAG_DIRECT_INSTANCE (1)
 
-typedef struct shd_basecrt {
-    shd_crttype_t  type;
-    shd_crtflags_t flags;
+typedef union {
+    struct {
+        shd_crttype_t type;
+        shd_crtflags_t flags;
+    };
+    u64 _raw;
 } shd_basecrt_t;
-typedef struct shd_basegtr {
-    shd_gtrtype_t  type;
-    shd_gtrflags_t flags;
+typedef union {
+    struct {
+        shd_gtrtype_t  type;
+        shd_gtrflags_t flags;
+    };
+    u64 _raw;
 } shd_basegtr_t;
-typedef struct shd_basehnd {
+typedef union {
+    struct {
 
+    };
+    u64 _raw;
 } shd_basehnd_t;
 
 typedef u64 shd_token_t;
