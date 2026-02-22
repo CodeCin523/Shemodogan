@@ -1,6 +1,8 @@
 #include <shd/handler/logger.h>
 #include <shd/shd.h>
 
+#include <shd/utils/handler.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -174,35 +176,23 @@ void shd_logh(const char *hnd_name, const char *msg, u8 level) {
 /* #region Handler# */
 /* ################ */
 static shd_status_t logger_init(shd_basecrt_t *_creator) {
-    if(!_creator)
-        return SHD_STATUS_HANDLER_MISSING_CREATOR;
-    if(_creator->type != SHD_CRTTYPE_LOGGER)
-        return SHD_STATUS_HANDLER_INVALID_CREATOR;
-    
-    shd_crt_logger_t creator = {
-        {0, 0}, 8192
-    };
-    if((_creator->flags & SHD_CRTFLAG_DEFAULT_CREATOR) == 0) {
-        shd_crt_logger_t *_crt = (shd_crt_logger_t *) _creator;
-        creator = *_crt;
-    }
-
-    shd_hnd_logger_t *dt = (shd_hnd_logger_t *) shd_handler_get(
-        SHD_HND_LOGGER_ID, 
-        &(shd_basegtr_t){ 0, SHD_GTRFLAG_DIRECT_INSTANCE }
+    SHD_HNDIMPL_INITIALIZE_CREATOR(
+        _creator, SHD_CRTTYPE_LOGGER,
+        shd_crt_logger_t,
+        SHD_BUNDLE_ARGS({
+            {0, 0}, 8192
+        })
     );
-    if(!dt)
-        return SHD_STATUS_FAILED;
+    SHD_HNDIMPL_INITIALIZE_DTINST(SHD_HND_LOGGER_ID, shd_hnd_logger_t);
 
-    dt->pBuf = malloc(creator.bufferSize);
-    if(!dt->pBuf)
+    dtinst->pBuf = malloc(creator.bufferSize);
+    if(!dtinst->pBuf)
         return SHD_STATUS_FAILED_EXTERN_ALLOC;
 
-    dt->bufIndex = 0;
-    dt->bufSize = creator.bufferSize;
-    logger_dt = dt;
-
-    return SHD_STATUS_SUCCESS;
+    dtinst->bufIndex = 0;
+    dtinst->bufSize = creator.bufferSize;
+    
+    SHD_HNDIMPL_INITIALIZE_SUCCESS(logger_dt);
 }
 static shd_status_t logger_term() {
     if(!logger_dt)

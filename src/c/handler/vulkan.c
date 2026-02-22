@@ -3,6 +3,8 @@
 #include <shd/mem/stack.h>
 #include <shd/shd.h>
 
+#include <shd/utils/handler.h>
+
 #include <string.h>
 
 
@@ -31,29 +33,18 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL shd_vkinst_default_callback(
 /* #region Handler# */
 /* ################ */
 static shd_status_t vkinst_init(shd_basecrt_t *_creator) {
-    if(!_creator)
-        return SHD_STATUS_HANDLER_MISSING_CREATOR;
-    if(_creator->type != SHD_CRTTYPE_VULKAN_INSTANCE)
-        return SHD_STATUS_HANDLER_INVALID_CREATOR;
-
-    shd_crt_vkinst_t creator = {
-        {0,0},
-        "App", 0,
-        1,
-        0,
-        shd_vkinst_default_callback
-    };
-    if((_creator->flags & SHD_CRTFLAG_DEFAULT_CREATOR) == 0) {
-        shd_crt_vkinst_t *_crt = (shd_crt_vkinst_t *) _creator;
-        creator = *_crt;
-    }
-
-    shd_hnd_vkinst_t *dt = (shd_hnd_vkinst_t *) shd_handler_get(
-        SHD_HND_VKINST_ID, 
-        &(shd_basegtr_t){ 0, SHD_GTRFLAG_DIRECT_INSTANCE }
+    SHD_HNDIMPL_INITIALIZE_CREATOR(
+        _creator, SHD_CRTTYPE_VULKAN_INSTANCE,
+        shd_crt_vkinst_t,
+        SHD_BUNDLE_ARGS({
+            {0,0},
+            "App", 0,
+            1,
+            0,
+            shd_vkinst_default_callback
+        })
     );
-    if(!dt)
-        return SHD_STATUS_FAILED;
+    SHD_HNDIMPL_INITIALIZE_DTINST(SHD_HND_VKINST_ID, shd_hnd_vkinst_t);
 
     u8 layer_callback = creator.fCallback != 0;
 
@@ -89,9 +80,7 @@ static shd_status_t vkinst_init(shd_basecrt_t *_creator) {
     // Instance
     
 
-    vkinst_dt = dt;
-
-    return SHD_STATUS_SUCCESS;
+    SHD_HNDIMPL_INITIALIZE_SUCCESS(vkinst_dt);
 }
 /* #endregion     # */
 /* ################ */

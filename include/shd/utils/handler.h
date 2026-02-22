@@ -1,0 +1,30 @@
+#ifndef __SHD_UTILS_HANDLER_H__
+#define __SHD_UTILS_HANDLER_H__
+
+#endif
+
+#define SHD_BUNDLE_ARGS(...) __VA_ARGS__
+
+#define SHD_HNDIMPL_INITIALIZE_CREATOR(creator_ptr, creator_id, creator_type, creator_default) \
+if(!creator_ptr) return SHD_STATUS_HANDLER_MISSING_CREATOR;                     \
+if(creator_ptr->type != creator_id) return SHD_STATUS_HANDLER_INVALID_CREATOR;  \
+creator_type creator = creator_default;                                         \
+if((creator_ptr->flags & SHD_CRTFLAG_DEFAULT_CREATOR) == 0) {                   \
+    creator_type *creator_data = (creator_type *) creator_ptr;                  \
+    creator = *creator_data;                                                    \
+}
+#define SHD_HNDIMPL_INITIALIZE_DTINST(handler_id, handler_type) \
+handler_type *dtinst = (handler_type *) shd_handler_get(                        \
+    handler_id,                                                                 \
+    &(shd_basegtr_t){ 0, SHD_GTRFLAG_DIRECT_INSTANCE }                          \
+);                                                                              \
+if(!dtinst) return SHD_STATUS_FAILED;
+
+#define SHD_HNDIMPL_INITIALIZE_SUCCESS(global_dtinst) \
+global_dtinst = dtinst; return SHD_STATUS_SUCCESS;
+
+#ifdef SHD_UTILS_UNDEF
+#undef SHD_HNDIMPL_INITIALIZE_CREATOR
+#undef SHD_HNDIMPL_INITIALIZE_DTINST
+#undef SHD_HNDIMPL_INITIALIZE_SUCCESS
+#endif /* __SHD_UTILS_HANDLER_H__ */
