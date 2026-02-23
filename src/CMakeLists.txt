@@ -20,6 +20,7 @@ target_sources(
     Shemodogan PRIVATE
         c/shd.c
         c/handler/logger.c
+        c/handler/vulkan.c
 )
 
 set_target_properties(Shemodogan PROPERTIES

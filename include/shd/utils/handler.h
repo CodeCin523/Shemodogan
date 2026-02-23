@@ -13,18 +13,14 @@ if((creator_ptr->flags & SHD_CRTFLAG_DEFAULT_CREATOR) == 0) {                   
     creator_type *creator_data = (creator_type *) creator_ptr;                  \
     creator = *creator_data;                                                    \
 }
-#define SHD_HNDIMPL_INITIALIZE_DTINST(handler_id, handler_type) \
-handler_type *dtinst = (handler_type *) shd_handler_get(                        \
+#define SHD_HNDIMPL_INITIALIZE_DTINST(handler_ptr, handler_id, handler_type) \
+handler_ptr = (handler_type *) shd_handler_get(                        \
     handler_id,                                                                 \
     &(shd_basegtr_t){ 0, SHD_GTRFLAG_DIRECT_INSTANCE }                          \
 );                                                                              \
-if(!dtinst) return SHD_STATUS_FAILED;
-
-#define SHD_HNDIMPL_INITIALIZE_SUCCESS(global_dtinst) \
-global_dtinst = dtinst; return SHD_STATUS_SUCCESS;
+if(!handler_ptr) return SHD_STATUS_FAILED;
 
 #ifdef SHD_UTILS_UNDEF
 #undef SHD_HNDIMPL_INITIALIZE_CREATOR
 #undef SHD_HNDIMPL_INITIALIZE_DTINST
-#undef SHD_HNDIMPL_INITIALIZE_SUCCESS
 #endif /* __SHD_UTILS_HANDLER_H__ */

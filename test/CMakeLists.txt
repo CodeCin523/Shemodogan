@@ -24,3 +24,8 @@ target_link_libraries(
     unit_stack PRIVATE
     Shemodogan::Shemodogan
 )
+add_executable(unit_vulkan unit/vulkan.c)
+target_link_libraries(
+    unit_vulkan PRIVATE
+    Shemodogan::Shemodogan
+)

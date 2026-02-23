@@ -20,7 +20,7 @@ typedef struct shd_hnd_vkinst {
 typedef struct shd_crt_vkinst {
     shd_basecrt_t base;
     const char *appName;
-    const char *extensions;
+    const char **extensions;
 
     u32 appVersion;
     u32 extensionCount;

@@ -183,16 +183,16 @@ static shd_status_t logger_init(shd_basecrt_t *_creator) {
             {0, 0}, 8192
         })
     );
-    SHD_HNDIMPL_INITIALIZE_DTINST(SHD_HND_LOGGER_ID, shd_hnd_logger_t);
+    SHD_HNDIMPL_INITIALIZE_DTINST(logger_dt, SHD_HND_LOGGER_ID, shd_hnd_logger_t);
 
-    dtinst->pBuf = malloc(creator.bufferSize);
-    if(!dtinst->pBuf)
+    logger_dt->pBuf = malloc(creator.bufferSize);
+    if(!logger_dt->pBuf)
         return SHD_STATUS_FAILED_EXTERN_ALLOC;
 
-    dtinst->bufIndex = 0;
-    dtinst->bufSize = creator.bufferSize;
+    logger_dt->bufIndex = 0;
+    logger_dt->bufSize = creator.bufferSize;
     
-    SHD_HNDIMPL_INITIALIZE_SUCCESS(logger_dt);
+    return SHD_STATUS_SUCCESS;
 }
 static shd_status_t logger_term() {
     if(!logger_dt)
@@ -209,7 +209,6 @@ static shd_status_t logger_term() {
     logger_dt->bufSize = 0;
 
     logger_dt = 0;
-
     return SHD_STATUS_SUCCESS;
 }
 static shd_basehnd_t *logger_get(shd_basegtr_t *_getter) {
