@@ -21,8 +21,10 @@ static const char LOG_LEVEL[][3] = { // use array to remove null terminator that
 };          
 
 
-/* #region Logger # */
-/* ################ */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Logger                                      # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 void shd_log_flush() {
     if(!logger_dt || !logger_dt->pBuf)
         return;
@@ -170,11 +172,12 @@ void shd_logh(const char *hnd_name, const char *msg, u8 level) {
 
     logger_dt->bufIndex = index;
 }
-/* #endregion     # */
-/* ################ */
 
-/* #region Handler# */
-/* ################ */
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Logger_Meta                                 # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 static shd_status_t logger_init(shd_basecrt_t *_creator) {
     SHD_HNDIMPL_INITIALIZE_CREATOR(
         _creator, SHD_CRTTYPE_LOGGER,
@@ -224,5 +227,3 @@ shd_handler_meta_t SHD_HND_LOGGER_META = {
     0,
     sizeof(shd_hnd_logger_t)
 };
-/* #endregion     # */
-/* ################ */

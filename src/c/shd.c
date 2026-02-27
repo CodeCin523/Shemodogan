@@ -22,8 +22,10 @@ shd_dfstack_t g_hndstatic_stack = {0};
 shd_dfstack_t g_hndtemp_stack = {0};
 
 
-/* #region Core # */
-/* ############## */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Core                                        # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 shd_status_t shd_init() {
     // Handler array
     g_hnddts = calloc(128, sizeof(struct hnd_data));
@@ -61,11 +63,11 @@ shd_status_t shd_exit() {
 
     return SHD_STATUS_SUCCESS;
 }
-/* #endregion   # */
-/* ############## */
 
-/* #region Handler# */
-/* ################ */
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Handler                                     # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
 
 // Find Current Index
 static inline u32 findci(shd_hid16_t hnd_id) {
@@ -213,5 +215,3 @@ shd_basehnd_t *shd_handler_get(shd_hid16_t hnd_id, shd_basegtr_t *getter) {
     else
         return g_hnddts[pos].hnd->fGet(getter);
 }
-/* #endregion     # */
-/* ################ */

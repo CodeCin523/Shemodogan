@@ -129,10 +129,10 @@ static inline void shd_dfstack_clear(shd_dfstack_t *vstack) {
 }
 
 
-/* #region Sanity checks # */
-/* ####################### */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Sanity checks                               # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 _Static_assert(sizeof(struct shd_dfmeta) == 8, "shd_dfmeta must be 64 bits");
-/* #endregion            # */
-/* ####################### */
 
 #endif /* __SHD_STACK_H__ */

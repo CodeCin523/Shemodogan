@@ -3,8 +3,11 @@
 
 #include "num.h"
 
-/* #region Id # */
-/* ############ */
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Id                                          # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 typedef u16 shd_id16_t;
 enum {
     SHD_ID16_GEN = 0b0000'0000'00000000,
@@ -42,8 +45,11 @@ enum {
     SHD_HID32_VULKAN_DEVICES   = (SHD_HID16_VULKAN_DEVICES     << 15),
     SHD_HID32_VULKAN_SWAPCHAIN = (SHD_HID16_VULKAN_SWAPCHAIN   << 15),
 };
-/* #endregion # */
-/* ############ */
+
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Types                                       # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
 
 typedef u32 shd_status_t;
 enum {  // NEED TO FIND CORRECT VALUES FOR THOSE

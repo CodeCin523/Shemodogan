@@ -3,18 +3,18 @@
 #include <shd/mem/stack.h>
 #include <shd/shd.h>
 
-#include <shd/utils/handler.h>
+#include <shd/utils/hndimpl.h>
 
 #include <string.h>
 
 
-extern shd_dfstack_t g_hndtemp_stack;
-
 static shd_hnd_vkinst_t *vkinst_dt = 0;
 
 
-/* #region VkInst # */
-/* ################ */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # VkInst                                      # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL shd_vkinst_default_callback(
     VkDebugUtilsMessageSeverityFlagBitsEXT severity,
     VkDebugUtilsMessageTypeFlagsEXT type,
@@ -27,12 +27,14 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL shd_vkinst_default_callback(
     );
     return VK_FALSE;
 }
-/* #endregion     # */
-/* ################ */
 
-/* #region Handler# */
-/* ################ */
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # VkInst_Meta                                 # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 static shd_status_t vkinst_init(shd_basecrt_t *_creator) {
+    SHD_HNDIMPL_TEMPSTACK_ACCESS(shd_dfstack_t* g_tempstack);
     SHD_HNDIMPL_INITIALIZE_CREATOR(
         _creator, SHD_CRTTYPE_VULKAN_INSTANCE,
         shd_crt_vkinst_t,
@@ -55,7 +57,7 @@ static shd_status_t vkinst_init(shd_basecrt_t *_creator) {
     if(layer_callback) { // Check Validation Layer
         u32 propCount = 0;
         vkEnumerateInstanceLayerProperties(&propCount, 0);
-        VkLayerProperties *availableProps = shd_dfstack_push(&g_hndtemp_stack, propCount * sizeof(VkLayerProperties));
+        VkLayerProperties *availableProps = shd_dfstack_push(g_tempstack, propCount * sizeof(VkLayerProperties));
         if (!availableProps) return SHD_STATUS_FAILED_INTERN_ALLOC;
         vkEnumerateInstanceLayerProperties(&propCount, availableProps);
 
@@ -74,10 +76,10 @@ static shd_status_t vkinst_init(shd_basecrt_t *_creator) {
             }
         }
     }
-    shd_dfstack_clear(&g_hndtemp_stack);
+    shd_dfstack_clear(g_tempstack);
 
     // Extensions
-    const char ** extensions = shd_dfstack_push(&g_hndtemp_stack, creator.extensionCount + 2);
+    const char ** extensions = shd_dfstack_push(g_tempstack, creator.extensionCount + 2);
     if(!extensions) return SHD_STATUS_FAILED_INTERN_ALLOC;
     u32 extensionCount = 0;
     {
@@ -183,5 +185,3 @@ shd_handler_meta_t SHD_HND_VKINST_META = {
     1,
     sizeof(shd_hnd_vkinst_t)
 };
-/* #endregion     # */
-/* ################ */

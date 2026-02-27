@@ -36,8 +36,11 @@ typedef double      f64;
 #define u64_MIN  0u
 #define u64_MAX  UINT64_MAX
 
-/* #region Sanity checks # */
-/* ####################### */
+
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+/* # Sanity checks                               # */
+/* ##### ##### ##### ##### ##### ##### ##### ##### */
+
 _Static_assert(sizeof(i8)  == 1, "i8 must be 1 byte");
 _Static_assert(sizeof(i16) == 2, "i16 must be 2 bytes");
 _Static_assert(sizeof(i32) == 4, "i32 must be 4 bytes");
@@ -50,7 +53,5 @@ _Static_assert(sizeof(f64) == 8, "f64 must be 8 bytes (IEEE-754 binary64)");
 _Static_assert(FLT_RADIX == 2,      "Floating point must be base-2");
 _Static_assert(FLT_MANT_DIG == 24,  "f32 must be IEEE-754 binary32");
 _Static_assert(DBL_MANT_DIG == 53,  "f64 must be IEEE-754 binary64");
-/* #endregion            # */
-/* ####################### */
 
 #endif /* __SHD_NUM_H__ */
