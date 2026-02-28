@@ -77,6 +77,7 @@ typedef u32 shd_crtflags_t;
 typedef u32 shd_gtrtype_t;
 #define SHD_GTRTYPE_LOGGER          (SHD_HID32_LOGGER | 0)
 #define SHD_GTRTYPE_VULKAN_INSTANCE (SHD_HID32_VULKAN_INSTANCE | 0)
+#define SHD_CRTTYPE_VULKAN_DEVICES  (SHD_HID32_VULKAN_DEVICES | 0)
 typedef u32 shd_gtrflags_t;
 #define SHD_GTRFLAG_DIRECT_INSTANCE (1)
 
