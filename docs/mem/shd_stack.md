@@ -12,9 +12,9 @@ Implements a single deferred stack structure (`shd_dfstack_t`) for managing allo
 
 ### Types
 
-| | |
-|---|---|
-| [shd_dfmeta](#shd_dfmeta) | [shd_dfstack_t](#shd_dfstack_t) |
+| | | |
+|---|---|---|
+| [shd_dfmeta](#shd_dfmeta) | [shd_dfstack_t](#shd_dfstack_t) | |
 
 ### Constants
 
@@ -26,7 +26,7 @@ Implements a single deferred stack structure (`shd_dfstack_t`) for managing allo
 
 | | | |
 |---|---|---|
-| [shd_create_dfstack_st](#shd_create_dfstack_st) | [shd_destroy_dfstack_st](#shd_destroy_dfstack_st) | [shd_dfstack_push_st](#shd_dfstack_push_st) |
+| [shd_setup_dfstack_st](#shd_setup_dfstack_st) | [shd_teardown_dfstack_st](#shd_teardown_dfstack_st) | [shd_dfstack_push_st](#shd_dfstack_push_st) |
 | [shd_dfstack_pop_st](#shd_dfstack_pop_st) | [shd_dfstack_clear_st](#shd_dfstack_clear_st) | |
 
 ---
@@ -87,11 +87,11 @@ Type: `u32`
 
 ---
 
-### shd_create_dfstack_st
+### shd_setup_dfstack_st
 
 Initialize a deferred stack.
 
-`shd_create_dfstack_st(shd_dfstack_t *vstack, void *pool, u32 size)`
+`shd_setup_dfstack_st(shd_dfstack_t *vstack, void *pool, u32 size)`
 
 - `vstack` – pointer to stack struct to initialize  
 - `pool` – preallocated memory block  
@@ -99,11 +99,11 @@ Initialize a deferred stack.
 
 ---
 
-### shd_destroy_dfstack_st
+### shd_teardown_dfstack_st
 
 Reset a deferred stack to zeroed state.
 
-`shd_destroy_dfstack_st(shd_dfstack_t *vstack)`
+`shd_teardown_dfstack_st(shd_dfstack_t *vstack)`
 
 ---
 

@@ -9,3 +9,4 @@ Custom memory utilities for the Shemodogan runtime.
 | File | Description |
 |------|-------------|
 | [shd_stack.h](shd_stack.md) | Low-level deferred stack implementation. Unsafe: for internal library usage only. |
+| [shd_block.h](shd_block.md) | Low-level memory allocator for fixed-size blocks. Unsafe: for internal library usage only. |
