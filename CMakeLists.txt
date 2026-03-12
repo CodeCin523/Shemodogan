@@ -26,7 +26,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # ---- Options ----
 option(Shemodogan_BUILD_EXAMPLES "Build Shemodogan example applications" OFF)
-option(Shemodogan_BUILD_TEST     "Build Shemodogan test applications"    OFF)
+option(Shemodogan_BUILD_TESTS    "Build Shemodogan test applications"    OFF)
 option(Shemodogan_RENDERER       "Enable the window handler (SDL3)"     ON)
 
 # ---- Optional user hints (Windows-friendly) ----
@@ -99,7 +99,7 @@ if(Shemodogan_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(Shemodogan_BUILD_TEST)
+if(Shemodogan_BUILD_TESTS)
     message(STATUS "  [START] Shemodogan tests setup")
     add_subdirectory(tests)
 endif()

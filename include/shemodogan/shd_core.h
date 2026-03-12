@@ -157,23 +157,23 @@ typedef struct shd_handler_meta {
 /* ================================================================================ */
 
 // Library Life-Cycle and Registers
-shd_result_t shd_init_st();
-shd_result_t shd_term_st();
+shd_result_t shd_init_st(void);
+shd_result_t shd_term_st(void);
 
-shd_result_t shd_register_actor_st();
-shd_result_t shd_register_handler_st();
+shd_result_t shd_register_actor_st(shd_actid_t actid, shd_actor_meta_t *meta);
+shd_result_t shd_register_handler_st(shd_hndid_t hndid, shd_handler_meta_t *meta);
 
 // Handler Life-Cycle
-shd_result_t shd_handler_init_st();
-shd_result_t shd_handler_term_st();
+shd_result_t shd_handler_init_st(shd_hndid_t hndid, shd_basecrt_t *creator);
+shd_result_t shd_handler_term_st(shd_hndid_t hndid);
 
-shd_result_t shd_handler_get_mt();
+shd_basehnd_t *shd_handler_get_mt(shd_hndid_t hndid, shd_basegtr_t *getter);
 
 // Actor Life-Cycle
 shd_result_t shd_actor_subscribe_mt();
 shd_result_t shd_actor_release_mt();
 
-shd_result_t shd_actor_get_mt();
+shd_baseact_t *shd_actor_get_mt();
 
 
 /* ================================================================================ */
