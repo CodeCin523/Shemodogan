@@ -46,10 +46,25 @@
 
 typedef u32 shd_result_t;
 enum {
-    SHD_RESULT_OK                       = 0,
-    SHD_RESULT_FAILED                   = 1,
-    SHD_RESULT_FAILED_INTERNAL_ALLOC    = 2,
-    SHD_RESULT_FAILED_EXTERNAL_ALLOC    = 3,
+    // General results
+    SHD_RESULT_OK                         = 0,   // Success
+    SHD_RESULT_FAILED                     = 1,   // Generic failure
+
+    // Argument / input errors (10–19)
+    SHD_RESULT_INVALID_ARGUMENTS          = 10,  // One or more arguments invalid
+    SHD_RESULT_MISSING_OUTPUT             = 11,  // Output pointer required but NULL
+
+    // Memory allocation errors (20–29)
+    SHD_RESULT_INTERNAL_ALLOC             = 20,  // Allocation failed internally
+    SHD_RESULT_EXTERNAL_ALLOC             = 21,  // Allocation failed from external source
+
+    // ID / entity errors (30–39)
+    SHD_RESULT_ID_EXISTS                  = 30,  // Trying to create an entity with an existing ID
+    SHD_RESULT_ID_NOT_FOUND               = 31,  // Entity with the given ID does not exist
+
+    // Dependency errors (40–49)
+    SHD_RESULT_MISSING_DEPENDENCIES       = 40,  // Required dependencies are missing
+    SHD_RESULT_EXISTENT_DEPENDENTS        = 41   // Cannot delete due to existing dependents
 };
 
 typedef u16 shd_hndid_t;
@@ -81,6 +96,7 @@ enum {
 
     // Creator Flags
     SHD_CRTFLAGS_DEFAULT_CREATOR = (1 << 0),
+    SHD_CRTFLAGS_AUTO_REGISTER   = (1 << 1)
 };
 
 
@@ -133,7 +149,7 @@ typedef struct shd_handler_meta {
 /* ================================================================================ */
 
 // Library Life-Cycle and Registers
-shd_result_t shd_init_st(void);
+shd_result_t shd_init_st(shd_crtflags_t flags);
 shd_result_t shd_term_st(void);
 
 shd_result_t shd_register_actor_st(shd_actid_t actid, shd_actor_meta_t *meta);
