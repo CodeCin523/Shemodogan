@@ -9,6 +9,7 @@
 struct shd_dataact {
     shd_sbblock_t       instdt_alloc;
     shd_actor_meta_t   *meta;
+    shd_actid_t         id;
 };
 struct shd_datahnd {
     shd_handler_meta_t *meta;
@@ -33,6 +34,39 @@ static shd_sbblock_t actpool_alloc = {0};   // main allocator for all instdt_all
 /* ================================================================================ */
 
 // Binary Search
+// Find Actor Current Index
+static inline u32 find_aci(shd_actid_t actid) {
+    u32 low = 0, high = dataact_count, mid;
+
+    while(low < high) {
+        mid = low + (high - low) / 2;
+        if(dataact[mid].id == actid)
+            return mid;
+        if(dataact[mid].id < actid)
+            low = mid + 1;
+        else
+            high = mid;
+    }
+
+    return u32_MAX;
+}
+// Find Actor Insert Index
+static inline u32 find_aii(shd_actid_t actid) {
+    u32 low = 0, high = dataact_count, mid;
+
+    while(low < high) {
+        mid = low + (high - low) / 2;
+        // if(items[mid].id == hnd_id)
+        //     return mid;
+        if(dataact[mid].id < actid)
+            low = mid + 1;
+        else
+            high = mid;
+    }
+
+    return low;
+}
+
 // Find Handler Current Index
 static inline u32 find_hci(shd_hndid_t hndid) {
     u32 low = 0, high = datahnd_count, mid;
@@ -126,7 +160,33 @@ shd_result_t shd_term_st(void) {
 }
 
 shd_result_t shd_register_actor_st(shd_actid_t actid, shd_actor_meta_t *meta) {
+    if(!meta || !meta->fInit || !meta->fTerm)
+        return SHD_RESULT_INVALID_ARGUMENTS;
+    if(dataact_count+1 >= dataact_size)
+        return SHD_RESULT_EXTERNAL_ALLOC;
 
+    if(find_aci(actid) != u32_MAX)
+        return SHD_RESULT_ID_EXISTS;
+
+    u32 pool_idx = shd_sbblock_alloc_st(&actpool_alloc);
+    if(pool_idx == u32_MAX)
+        return SHD_RESULT_INTERNAL_ALLOC;
+    void *pool = shd_sbblock_get_mt(&actpool_alloc, pool_idx);
+
+    u32 pos = find_aii(actid);
+    if(pos != dataact_count) {
+        memmove(&dataact[pos + 1],
+                &dataact[pos],
+                (dataact_count - pos) * sizeof(struct shd_dataact));
+    }
+
+    shd_setup_sbblock_st(&dataact[pos].instdt_alloc, pool, actpool_alloc.block_size, meta->datalen);
+
+    dataact[pos].meta = meta;
+    dataact[pos].id = actid;
+
+    ++dataact_count;
+    return SHD_RESULT_OK;
 }
 shd_result_t shd_register_handler_st(shd_hndid_t hndid, shd_handler_meta_t *meta) {
     // Safety checks
