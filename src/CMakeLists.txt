@@ -37,6 +37,8 @@ target_include_directories(
 # Link dependencies
 target_link_libraries(
     Shemodogan
+    PRIVATE
+        memcc::memcc
     PUBLIC
         Vulkan::Vulkan
 )

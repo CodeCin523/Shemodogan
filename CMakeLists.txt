@@ -12,7 +12,7 @@ project(
 # ---- Directories ----
 set(Shemodogan_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(Shemodogan_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
-set(Shemodogan_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
+set(Shemodogan_TESTS_DIR   ${CMAKE_CURRENT_LIST_DIR}/tests)
 
 message(STATUS "[START] Shemodogan Project Setup")
 
@@ -55,6 +55,7 @@ endif()
 
 # ---- Subprojects ----
 message(STATUS "  [START] Shemodogan library setup")
+add_subdirectory(external/memcc)
 add_subdirectory(src)
 
 # ---- Install configuration ----

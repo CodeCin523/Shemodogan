@@ -1,13 +1,16 @@
-#include <shemodogan/mem/shd_block.h>
-#include <shemodogan/mem/shd_mem.h>
 #include <shemodogan/shd_core.h>
+
+#define MEMCC_BLOCK_IMPLEMENTATION
+#define MEMCC_STACK_IMPLEMENTATION
+#include <memcc/memcc_block.h>
+#include <memcc/memcc_stack.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 
 struct shd_dataact {
-    shd_sbblock_t       instdt_alloc;
+    memcc_sbblock_t     instdt_alloc;
     shd_actor_meta_t   *meta;
     shd_actid_t         id;
 };
@@ -26,7 +29,7 @@ static u32 dataact_count = 0, dataact_size = 0;
 static struct shd_datahnd *datahnd;         // all registered handler
 static u32 datahnd_count = 0, datahnd_size = 0;
 
-static shd_sbblock_t actpool_alloc = {0};   // main allocator for all instdt_alloc of the actors.
+static memcc_sbblock_t actpool_alloc = {0}; // main allocator for all instdt_alloc of the actors.
 
 
 /* ================================================================================ */
@@ -104,10 +107,10 @@ static inline u32 find_hii(shd_hndid_t hndid) {
 // Library Life-Cycle and Registers
 shd_result_t shd_init_st(shd_crtflags_t flags) {
     // Actor & Handler arrays
-    dataact = calloc(SHD_KB(2), sizeof(struct shd_dataact));
+    dataact = calloc(MEMCC_KB(2), sizeof(struct shd_dataact));
     if(!dataact) return SHD_RESULT_EXTERNAL_ALLOC;
 
-    dataact_size = SHD_KB(2);
+    dataact_size = MEMCC_KB(2);
     dataact_count = 0;
 
     datahnd = calloc(256, sizeof(struct shd_datahnd));
@@ -117,9 +120,9 @@ shd_result_t shd_init_st(shd_crtflags_t flags) {
     datahnd_count = 0;
 
     // Block & Stack allocs
-    void *pool = malloc(SHD_MB(1));
+    void *pool = malloc(MEMCC_MB(1));
     if(!pool) return SHD_RESULT_EXTERNAL_ALLOC;
-    shd_setup_sbblock_st(&actpool_alloc, pool, SHD_MB(1), SHD_KB(1));
+    memcc_setup_sbblock(&actpool_alloc, pool, MEMCC_MB(1), MEMCC_KB(1));
 
     // Auto Register
     /* if( !(flags & SHD_CRTFLAGS_AUTO_REGISTER) ) {
@@ -141,7 +144,7 @@ shd_result_t shd_term_st(void) {
 
     if(actpool_alloc.pool) {
         free(actpool_alloc.pool);
-        shd_teardown_sbblock_st(&actpool_alloc);
+        memcc_teardown_sbblock(&actpool_alloc);
     }
     if(datahnd) {
         free(datahnd);
@@ -168,10 +171,10 @@ shd_result_t shd_register_actor_st(shd_actid_t actid, shd_actor_meta_t *meta) {
     if(find_aci(actid) != u32_MAX)
         return SHD_RESULT_ID_EXISTS;
 
-    u32 pool_idx = shd_sbblock_alloc_st(&actpool_alloc);
+    u32 pool_idx = memcc_sbblock_alloc(&actpool_alloc);
     if(pool_idx == u32_MAX)
         return SHD_RESULT_INTERNAL_ALLOC;
-    void *pool = shd_sbblock_get_mt(&actpool_alloc, pool_idx);
+    void *pool = memcc_sbblock_get(&actpool_alloc, pool_idx);
 
     u32 pos = find_aii(actid);
     if(pos != dataact_count) {
@@ -180,7 +183,7 @@ shd_result_t shd_register_actor_st(shd_actid_t actid, shd_actor_meta_t *meta) {
                 (dataact_count - pos) * sizeof(struct shd_dataact));
     }
 
-    shd_setup_sbblock_st(&dataact[pos].instdt_alloc, pool, actpool_alloc.block_size, meta->datalen);
+    memcc_setup_sbblock(&dataact[pos].instdt_alloc, pool, actpool_alloc.block_size, meta->datalen);
 
     dataact[pos].meta = meta;
     dataact[pos].id = actid;
@@ -218,7 +221,6 @@ shd_result_t shd_register_handler_st(shd_hndid_t hndid, shd_handler_meta_t *meta
 }
 
 // Handler Life-Cycle
-
 shd_result_t shd_handler_init_st(shd_hndid_t hndid, shd_basecrt_t *creator) {
     u32 pos = find_hci(hndid);
     if(pos == u32_MAX)
