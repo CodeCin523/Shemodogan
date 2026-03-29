@@ -11,7 +11,6 @@ Contains the core API, basic numeric type definitions, and internal helper utili
 | Directory | Description |
 |-----------|-------------|
 | [utils](utils/README.md) | Low-level helper utilities for constructing and inspecting internal runtime structures. Macro-heavy; includes a mechanism (`SHD_UTILS_UNDEF`) to remove all macros for namespace cleanliness. ⚠ Only use if you fully understand the system. |
-| [mem](mem/README.md) | Custom memory utilities for Shemodogan. Provides stack-like and other memory structures. ⚠ Caller is responsible for memory alignment and safe usage; improper use may corrupt runtime state. |
 
 ## Files
 
